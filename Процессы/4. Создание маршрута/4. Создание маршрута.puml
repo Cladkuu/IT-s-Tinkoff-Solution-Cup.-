@@ -1,0 +1,20 @@
+@startuml
+actor Фея
+boundary UI
+note over UI: опускаем наличие Gateway
+
+control Route_Service
+boundary Children_Service
+
+
+autonumber
+
+Фея->UI: указание даты маршрута и детей, которых нужно обойти
+UI-> Route_Service: валидация запроса
+Route_Service-> Children_Service: получение информации о детях, включая их координаты
+Route_Service->Route_Service: поиск оптимального пути для маршрута на основании координат детей
+Route_Service->Route_Service: создание записи в БД о новом маршруте
+Route_Service-->UI: маршрут создан
+UI-->Фея: маршрут создан
+
+@enduml

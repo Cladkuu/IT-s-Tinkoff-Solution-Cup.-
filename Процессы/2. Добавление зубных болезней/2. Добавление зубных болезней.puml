@@ -1,0 +1,19 @@
+@startuml
+actor Child
+boundary UI
+boundary Children_Gateway
+control dental_diseases
+
+autonumber
+
+Child->UI: Добавить болезнь к конкретному зубу
+UI->Children_Gateway: Добавить болезнь к конкретному зубу
+Children_Gateway->dental_diseases: Добавить болезнь к конкретному зубу
+dental_diseases->dental_diseases: добавляем болезнь по зубу
+dental_diseases->dental_diseases: публикуем событие в кафку о новом зубном заболевании у конкретного зуба
+dental_diseases-->Children_Gateway: 200
+Children_Gateway-->UI: 200
+UI->Child: 200
+
+
+@enduml

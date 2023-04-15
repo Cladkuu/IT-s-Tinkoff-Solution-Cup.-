@@ -1,0 +1,34 @@
+@startuml
+actor Child
+boundary UI
+boundary Children_Gateway
+control Teeth_service
+control Dental_verifier
+boundary file_uploader
+
+autonumber
+
+Child->UI: Add tooth with photo
+UI->file_uploader: upload photo
+file_uploader-->UI: photo url
+UI->Children_Gateway: create tooth
+Children_Gateway->Teeth_service: Создаем запись о новом зубе в статусе PENDING_VERIFICATION
+Teeth_service->>Dental_verifier: команда на верификацию зуба
+Teeth_service-->Children_Gateway: запущен процесс верификации
+Children_Gateway-->UI: запущен процесс верификации
+UI-->Child: запущен процесс верификации
+Dental_verifier->Dental_verifier: верификация зуба
+note over Teeth_service, Dental_verifier: Процесс заведения зуба работает на паттерне saga:\n
+Teeth_service дает команду Dental_verifier на верификацию зуба\n
+Dental_verifier верифицирует зуб и вовзрашает результат верификации Teeth_service
+|||
+
+
+Dental_verifier->>Teeth_service: результат верификации
+Teeth_service->Teeth_service: меняем статус зуба на VERIFIED и обогащаем информацией о зубе: тип, цвет, вид зуба\n Зуб готов к работе
+Teeth_service->Teeth_service: публикуем событие в кафку о заведении нового зуба
+
+
+
+
+@enduml
